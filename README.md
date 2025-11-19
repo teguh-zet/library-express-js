@@ -12,6 +12,7 @@ Backend API untuk technical test posisi Junior Backend Developer di Summit Globa
 - PostgreSQL database dengan proper indexing
 - Service layer untuk business logic
 - Input validation dan error handling
+- Swagger API Documentation
 
 ## Tech Stack
 
@@ -19,112 +20,229 @@ Backend API untuk technical test posisi Junior Backend Developer di Summit Globa
 - Express.js
 - PostgreSQL
 - express-validator untuk validation
+- Swagger UI untuk dokumentasi API
+
+## Persyaratan Sistem
+
+Sebelum memulai, pastikan Anda telah menginstall:
+
+### a. Node.js
+- **Versi minimum:** Node.js v14.0.0 atau lebih baru
+- **Cara cek versi:**
+  ```bash
+  node --version
+  ```
+- **Download:** [https://nodejs.org/](https://nodejs.org/)
+
+### b. Express.js
+- **Versi:** Express.js ^4.18.2 (akan terinstall otomatis saat `npm install`)
+- Dependencies akan terinstall melalui `package.json`
+
+### c. PostgreSQL
+- **Versi minimum:** PostgreSQL v12.0 atau lebih baru
+- **Cara cek versi:**
+  ```bash
+  psql --version
+  ```
+- **Download:** [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
+
+### d. npm (Node Package Manager)
+- Biasanya sudah termasuk saat install Node.js
+- **Cara cek versi:**
+  ```bash
+  npm --version
+  ```
+
+## Instalasi dan Setup
+
+### Langkah 1: Clone Repository
+
+```bash
+git clone <repository-url>
+cd "project sgt"
+```
+
+### Langkah 2: Install Dependencies
+
+Jalankan perintah berikut untuk menginstall semua dependencies yang diperlukan:
+
+```bash
+npm install
+```
+
+Perintah ini akan menginstall semua package yang terdaftar di `package.json`, termasuk:
+- `express` (^4.18.2)
+- `pg` (^8.11.3) - PostgreSQL client
+- `express-validator` (^7.0.1) - Input validation
+- `dotenv` (^16.3.1) - Environment variables
+- `cors` (^2.8.5) - Cross-Origin Resource Sharing
+- `swagger-ui-express` (^5.0.0) - Swagger UI
+- `swagger-jsdoc` (^6.2.8) - Swagger documentation generator
+- `nodemon` (^3.0.2) - Development tool (dev dependency)
+- `jest` (^29.7.0) - Testing framework (dev dependency)
+
+**Catatan:** Pastikan koneksi internet aktif saat menjalankan `npm install`.
+
+### Langkah 3: Setup Database PostgreSQL
+
+#### 3.1. Buat Database
+
+```bash
+psql -U postgres -c "CREATE DATABASE library_db;"
+```
+
+**Alternatif menggunakan PowerShell (Windows):**
+```powershell
+# Jalankan script setup otomatis
+.\setup_database.ps1
+```
+
+#### 3.2. Import Schema Database
+
+```bash
+psql -U postgres -d library_db -f schema.sql
+```
+
+#### 3.3. Import Sample Data (Opsional)
+
+```bash
+psql -U postgres -d library_db -f sample_data.sql
+```
+
+**Catatan:** 
+- Ganti `postgres` dengan username PostgreSQL Anda jika berbeda
+- Pastikan PostgreSQL service sudah running sebelum menjalankan perintah di atas
+
+### Langkah 4: Konfigurasi Environment Variables
+
+Buat file `.env` di root directory project dengan isi berikut:
+
+```env
+PORT=3000
+NODE_ENV=development
+
+# PostgreSQL Database Configuration
+DB_HOST=localhost
+DB_USER=postgres
+DB_PASSWORD=your_password_here
+DB_NAME=library_db
+DB_PORT=5432
+```
+
+**⚠️ PENTING:**
+- Ganti `your_password_here` dengan password PostgreSQL Anda
+- Pastikan semua nilai sesuai dengan konfigurasi PostgreSQL Anda
+- File `.env` sudah terdaftar di `.gitignore` untuk keamanan
+
+### Langkah 5: Verifikasi Setup
+
+Pastikan:
+- ✅ Node.js terinstall (v14+)
+- ✅ PostgreSQL terinstall dan running (v12+)
+- ✅ Database `library_db` sudah dibuat
+- ✅ Schema dan sample data sudah diimport
+- ✅ File `.env` sudah dibuat dengan konfigurasi yang benar
+- ✅ Dependencies sudah terinstall (`node_modules` folder ada)
+
+## Menjalankan Proyek
+
+### Development Mode (Recommended)
+
+Jalankan aplikasi dalam mode development dengan auto-reload:
+
+```bash
+npm run dev
+```
+
+**Fitur:**
+- Server akan otomatis restart saat ada perubahan file
+- Menggunakan `nodemon` untuk monitoring perubahan
+- Cocok untuk development dan testing
+
+### Production Mode
+
+Jalankan aplikasi dalam mode production:
+
+```bash
+npm start
+```
+
+**Fitur:**
+- Menggunakan `node` langsung tanpa auto-reload
+- Cocok untuk production environment
+
+### Verifikasi Server Berjalan
+
+Setelah menjalankan perintah di atas, Anda akan melihat output seperti:
+
+```
+Database connected successfully
+Server running on port 3000
+```
+
+Server akan berjalan di: **http://localhost:3000**
+
+### Test Koneksi
+
+Buka browser atau gunakan curl untuk test endpoint health check:
+
+```bash
+curl http://localhost:3000/health
+```
+
+Atau buka di browser: `http://localhost:3000/health`
+
+Response yang diharapkan:
+```json
+{
+  "status": "OK",
+  "message": "Server is running",
+  "timestamp": "2024-12-01T00:00:00.000Z"
+}
+```
+
+## Akses Dokumentasi API
+
+Setelah server running, akses Swagger UI untuk dokumentasi interaktif:
+
+**URL:** http://localhost:3000/api-docs
+
+Swagger UI menyediakan:
+- Dokumentasi lengkap semua endpoints
+- Try it out - test API langsung dari browser
+- Request/Response examples
+- Schema definitions
 
 ## Project Structure
 
 ```
 .
 ├── config/
-│   └── database.js          # Database configuration
+│   ├── database.js          # Database configuration & connection
+│   └── swagger.js           # Swagger documentation configuration
 ├── controllers/
 │   ├── bookController.js    # Book endpoints controller
 │   ├── memberController.js  # Member endpoints controller
 │   └── borrowingController.js # Borrowing endpoints controller
 ├── services/
-│   ├── bookService.js      # Book business logic
-│   ├── memberService.js    # Member business logic
-│   └── borrowingService.js # Borrowing business logic
+│   ├── bookService.js       # Book business logic
+│   ├── memberService.js     # Member business logic
+│   └── borrowingService.js  # Borrowing business logic (with transactions)
 ├── routes/
-│   ├── books.js            # Book routes
-│   ├── members.js          # Member routes
-│   └── borrowings.js       # Borrowing routes
+│   ├── books.js             # Book routes
+│   ├── members.js           # Member routes
+│   └── borrowings.js        # Borrowing routes
 ├── middleware/
 │   └── validation.js       # Validation middleware
-├── schema.sql              # Database schema
-├── sample_data.sql         # Sample data
-├── server.js               # Main server file
-└── package.json
-```
-
-## Instalasi
-
-### Prerequisites
-
-- Node.js (v14 atau lebih baru)
-- PostgreSQL (v12 atau lebih baru)
-
-### Setup
-
-1. Clone repository ini
-```bash
-git clone <repository-url>
-cd project-sgt
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Setup PostgreSQL database:
-   
-   **📖 Lihat panduan lengkap di [SETUP_GUIDE.md](./SETUP_GUIDE.md)**
-   
-   **Quick setup:**
-   ```bash
-   # Buat database
-   psql -U postgres -c "CREATE DATABASE library_db;"
-   
-   # Import schema
-   psql -U postgres -d library_db -f schema.sql
-   
-   # Import sample data
-   psql -U postgres -d library_db -f sample_data.sql
-   ```
-
-4. Setup environment variables:
-   
-   Buat file `.env` di root directory dengan isi:
-   ```env
-   PORT=3000
-   NODE_ENV=development
-   
-   # PostgreSQL Database
-   DB_HOST=localhost
-   DB_USER=postgres
-   DB_PASSWORD=teazet
-   DB_NAME=library_db
-   DB_PORT=5432
-   ```
-   
-   **⚠️ PENTING:** Sesuaikan `DB_PASSWORD` dengan password PostgreSQL Anda!
-   
-   **📖 Untuk penjelasan detail, lihat [SETUP_GUIDE.md](./SETUP_GUIDE.md)**
-
-7. Jalankan aplikasi:
-```bash
-# Development mode
-npm run dev
-
-# Production mode
-npm start
-```
-
-Server akan berjalan di `http://localhost:3000`
-
-## Konfigurasi Environment Variables
-
-Buat file `.env` dengan konfigurasi berikut:
-
-```
-PORT=3000
-NODE_ENV=development
-
-DB_HOST=localhost
-DB_USER=postgres
-DB_PASSWORD=your_password
-DB_NAME=library_db
-DB_PORT=5432
+├── utils/
+│   ├── logger.js            # Logging utility
+│   └── response.js          # Response helper functions
+├── schema.sql               # Database schema
+├── sample_data.sql          # Sample data untuk testing
+├── setup_database.ps1       # PowerShell script untuk setup database (Windows)
+├── server.js                # Main server file
+├── package.json             # Dependencies & scripts
+└── .env                     # Environment variables (buat sendiri)
 ```
 
 ## API Endpoints
@@ -218,35 +336,6 @@ Get member's borrowing history.
 GET /api/members/{member_id}/borrowings?status=BORROWED&page=1&limit=10
 ```
 
-**Response:**
-```json
-{
-  "data": [
-    {
-      "id": "uuid",
-      "book_id": "uuid",
-      "member_id": "uuid",
-      "borrow_date": "2024-11-21",
-      "return_date": null,
-      "status": "BORROWED",
-      "book": {
-        "id": "uuid",
-        "title": "The Great Gatsby",
-        "author": "F. Scott Fitzgerald",
-        "published_year": 1925,
-        "isbn": "9780743273565"
-      }
-    }
-  ],
-  "pagination": {
-    "total": 5,
-    "page": 1,
-    "limit": 10,
-    "totalPages": 1
-  }
-}
-```
-
 ### Borrowings
 
 #### POST /api/borrowings
@@ -266,28 +355,6 @@ Create new book borrowing.
 - Book stock will be decreased by 1
 - Borrowing date is set to current date
 
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Book borrowed successfully",
-  "data": {
-    "id": "uuid",
-    "book_id": "uuid",
-    "member_id": "uuid",
-    "borrow_date": "2024-12-01",
-    "return_date": null,
-    "status": "BORROWED",
-    "book": {
-      "id": "uuid",
-      "title": "The Great Gatsby",
-      "author": "F. Scott Fitzgerald",
-      "isbn": "9780743273565"
-    }
-  }
-}
-```
-
 **Error Responses:**
 - `400`: Book is out of stock
 - `400`: Member cannot borrow more than 3 books
@@ -304,28 +371,6 @@ Process book return.
 - Book stock will be increased by 1
 - Return date is set to current date
 - Status changed to 'RETURNED'
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Book returned successfully",
-  "data": {
-    "id": "uuid",
-    "book_id": "uuid",
-    "member_id": "uuid",
-    "borrow_date": "2024-11-21",
-    "return_date": "2024-12-01",
-    "status": "RETURNED",
-    "book": {
-      "id": "uuid",
-      "title": "The Great Gatsby",
-      "author": "F. Scott Fitzgerald",
-      "isbn": "9780743273565"
-    }
-  }
-}
-```
 
 **Error Responses:**
 - `404`: Borrowing record not found
@@ -405,6 +450,35 @@ Semua error responses mengikuti format:
 }
 ```
 
+## Troubleshooting
+
+### Database Connection Error
+- Pastikan PostgreSQL service sudah running
+- Cek konfigurasi di file `.env` (host, port, user, password)
+- Pastikan database `library_db` sudah dibuat
+
+### Port Already in Use
+- Ganti `PORT` di file `.env` dengan port lain (contoh: 3001)
+- Atau hentikan aplikasi yang menggunakan port 3000
+
+### Module Not Found
+- Pastikan sudah menjalankan `npm install`
+- Hapus folder `node_modules` dan `package-lock.json`, lalu jalankan `npm install` lagi
+
+### Dependencies Installation Failed
+- Pastikan koneksi internet aktif
+- Coba clear npm cache: `npm cache clean --force`
+- Coba install ulang: `npm install`
+
+## Catatan Penting
+
+- Pastikan PostgreSQL sudah running sebelum menjalankan aplikasi
+- Import `schema.sql` terlebih dahulu sebelum menjalankan aplikasi
+- Sample data dapat diimport menggunakan `sample_data.sql` untuk testing
+- Semua business logic diimplementasikan di service layer
+- Database transactions digunakan untuk operasi borrowing dan return
+- File `.env` jangan di-commit ke repository (sudah ada di `.gitignore`)
+
 ## Testing
 
 ### Swagger UI (Recommended)
@@ -418,22 +492,8 @@ Swagger UI menyediakan:
 - Try it out langsung dari browser
 - Request/Response examples
 
-### Testing Guide
-Lihat **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** untuk panduan lengkap testing dengan berbagai tools.
-
-### Complete Examples
-Lihat **[ENDPOINT_TESTING_EXAMPLES.md](./ENDPOINT_TESTING_EXAMPLES.md)** untuk semua parameter dan request body lengkap.
-
 ### Unit Tests
 Jalankan test dengan:
 ```bash
 npm test
 ```
-
-## Catatan
-
-- Pastikan PostgreSQL sudah running sebelum menjalankan aplikasi
-- Import schema.sql terlebih dahulu sebelum menjalankan aplikasi
-- Sample data dapat diimport menggunakan sample_data.sql
-- Semua business logic diimplementasikan di service layer
-- Database transactions digunakan untuk operasi borrowing dan return
