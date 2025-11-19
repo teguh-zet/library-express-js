@@ -33,7 +33,7 @@ if (-not $psqlPath) {
 # Konfigurasi
 $dbUser = "postgres"
 $dbName = "library_db"
-$dbPassword = "teazet"  # Sesuaikan dengan password PostgreSQL Anda
+$dbPassword = "your_password"  # Sesuaikan dengan password PostgreSQL Masing-masing
 
 # Get current directory
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path

@@ -24,31 +24,31 @@ Backend API untuk technical test posisi Junior Backend Developer di Summit Globa
 
 ## Persyaratan Sistem
 
-Sebelum memulai, pastikan Anda telah menginstall:
+Sebelum memulai, pastikan sudah menginstall:
 
 ### a. Node.js
-- **Versi minimum:** Node.js v14.0.0 atau lebih baru
-- **Cara cek versi:**
+- Versi minimal v14.0.0 atau lebih baru
+- Untuk mengecek versi yang terinstall:
   ```bash
   node --version
   ```
-- **Download:** [https://nodejs.org/](https://nodejs.org/)
+- Download: [https://nodejs.org/](https://nodejs.org/)
 
 ### b. Express.js
-- **Versi:** Express.js ^4.18.2 (akan terinstall otomatis saat `npm install`)
-- Dependencies akan terinstall melalui `package.json`
+- Versi ^4.18.2 (akan terinstall otomatis saat `npm install`)
+- Semua dependencies akan terinstall melalui `package.json`
 
 ### c. PostgreSQL
-- **Versi minimum:** PostgreSQL v12.0 atau lebih baru
-- **Cara cek versi:**
+- Versi minimal v12.0 atau lebih baru
+- Untuk mengecek versi:
   ```bash
   psql --version
   ```
-- **Download:** [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
+- Download: [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
 
-### d. npm (Node Package Manager)
+### d. npm
 - Biasanya sudah termasuk saat install Node.js
-- **Cara cek versi:**
+- Untuk mengecek versi:
   ```bash
   npm --version
   ```
@@ -64,46 +64,48 @@ cd "project sgt"
 
 ### Langkah 2: Install Dependencies
 
-Jalankan perintah berikut untuk menginstall semua dependencies yang diperlukan:
+Jalankan perintah berikut:
 
 ```bash
 npm install
 ```
 
-Perintah ini akan menginstall semua package yang terdaftar di `package.json`, termasuk:
+Perintah ini akan menginstall semua package yang ada di `package.json`, termasuk:
 - `express` (^4.18.2)
-- `pg` (^8.11.3) - PostgreSQL client
-- `express-validator` (^7.0.1) - Input validation
-- `dotenv` (^16.3.1) - Environment variables
-- `cors` (^2.8.5) - Cross-Origin Resource Sharing
+- `pg` (^8.11.3) - untuk koneksi PostgreSQL
+- `express-validator` (^7.0.1) - validasi input
+- `dotenv` (^16.3.1) - environment variables
+- `cors` (^2.8.5) - CORS handling
 - `swagger-ui-express` (^5.0.0) - Swagger UI
-- `swagger-jsdoc` (^6.2.8) - Swagger documentation generator
-- `nodemon` (^3.0.2) - Development tool (dev dependency)
-- `jest` (^29.7.0) - Testing framework (dev dependency)
+- `swagger-jsdoc` (^6.2.8) - generate Swagger docs
+- `nodemon` (^3.0.2) - auto-reload saat development
 
-**Catatan:** Pastikan koneksi internet aktif saat menjalankan `npm install`.
+**Catatan:** Pastikan koneksi internet aktif karena perlu download packages.
 
 ### Langkah 3: Setup Database PostgreSQL
 
-#### 3.1. Buat Database
+Ada beberapa cara untuk setup database, pilih salah satu yang paling nyaman:
+
+#### Opsi A: Menggunakan Command Line (psql)
+
+##### 3.1. Buat Database
 
 ```bash
 psql -U postgres -c "CREATE DATABASE library_db;"
 ```
 
-**Alternatif menggunakan PowerShell (Windows):**
+**Alternatif untuk Windows (PowerShell):**
 ```powershell
-# Jalankan script setup otomatis
 .\setup_database.ps1
 ```
 
-#### 3.2. Import Schema Database
+##### 3.2. Import Schema
 
 ```bash
 psql -U postgres -d library_db -f schema.sql
 ```
 
-#### 3.3. Import Sample Data (Opsional)
+##### 3.3. Import Sample Data (Opsional)
 
 ```bash
 psql -U postgres -d library_db -f sample_data.sql
@@ -113,9 +115,62 @@ psql -U postgres -d library_db -f sample_data.sql
 - Ganti `postgres` dengan username PostgreSQL Anda jika berbeda
 - Pastikan PostgreSQL service sudah running sebelum menjalankan perintah di atas
 
-### Langkah 4: Konfigurasi Environment Variables
+#### Opsi B: Menggunakan DBeaver (GUI Tool)
 
-Buat file `.env` di root directory project dengan isi berikut:
+Jika lebih nyaman menggunakan GUI tool, bisa menggunakan DBeaver:
+
+##### 3.1. Install dan Setup DBeaver
+
+1. Download DBeaver: [https://dbeaver.io/download/](https://dbeaver.io/download/)
+2. Install DBeaver
+3. Buka DBeaver dan buat koneksi baru ke PostgreSQL
+4. Masukkan informasi koneksi:
+   - Host: `localhost`
+   - Port: `5432`
+   - Database: `postgres` (untuk membuat database baru)
+   - Username: `postgres`
+   - Password: password PostgreSQL Anda
+
+##### 3.2. Buat Database
+
+1. Klik kanan pada koneksi PostgreSQL → **SQL Editor** → **New SQL Script**
+2. Jalankan query berikut:
+   ```sql
+   CREATE DATABASE library_db;
+   ```
+3. Klik **Execute SQL Script** (Ctrl+Alt+X)
+4. Refresh koneksi untuk melihat database `library_db` muncul
+
+##### 3.3. Import Schema
+
+1. Klik kanan pada database `library_db` → **SQL Editor** → **New SQL Script**
+2. Buka file `schema.sql` dengan text editor (Notepad, VS Code, dll)
+3. Copy semua isi file `schema.sql` (Ctrl+A, Ctrl+C)
+4. Paste ke SQL Editor di DBeaver (Ctrl+V)
+5. Klik **Execute SQL Script** (Ctrl+Alt+X) atau tombol **Execute Script** (▶️)
+
+**Alternatif:** Klik kanan pada database `library_db` → **Tools** → **Execute Script** → Pilih file `schema.sql` → Klik **Start**
+
+##### 3.4. Import Sample Data (Opsional)
+
+1. Klik kanan pada database `library_db` → **SQL Editor** → **New SQL Script**
+2. Buka file `sample_data.sql` dengan text editor
+3. Copy semua isi file `sample_data.sql` (Ctrl+A, Ctrl+C)
+4. Paste ke SQL Editor di DBeaver (Ctrl+V)
+5. Klik **Execute SQL Script** (Ctrl+Alt+X)
+
+**Alternatif:** Klik kanan pada database `library_db` → **Tools** → **Execute Script** → Pilih file `sample_data.sql` → Klik **Start**
+
+##### 3.5. Verifikasi Setup
+
+1. Refresh database `library_db` (klik kanan → Refresh)
+2. Expand `Schemas` → `public` → `Tables`
+3. Pastikan ada 3 tables: `books`, `members`, `borrowings`
+4. Klik kanan pada table `books` → **View Data** untuk melihat data (harusnya ada 20 rows jika sudah import sample data)
+
+### Langkah 4: Setup Environment Variables
+
+Buat file `.env` di root folder project dengan isi berikut:
 
 ```env
 PORT=3000
@@ -129,51 +184,51 @@ DB_NAME=library_db
 DB_PORT=5432
 ```
 
-**⚠️ PENTING:**
+**⚠️ Penting:**
 - Ganti `your_password_here` dengan password PostgreSQL Anda
-- Pastikan semua nilai sesuai dengan konfigurasi PostgreSQL Anda
-- File `.env` sudah terdaftar di `.gitignore` untuk keamanan
+- Pastikan semua setting sesuai dengan konfigurasi PostgreSQL Anda
+- File `.env` sudah di-ignore di `.gitignore` untuk keamanan
 
 ### Langkah 5: Verifikasi Setup
 
-Pastikan:
+Pastikan semua sudah siap:
 - ✅ Node.js terinstall (v14+)
 - ✅ PostgreSQL terinstall dan running (v12+)
 - ✅ Database `library_db` sudah dibuat
 - ✅ Schema dan sample data sudah diimport
 - ✅ File `.env` sudah dibuat dengan konfigurasi yang benar
-- ✅ Dependencies sudah terinstall (`node_modules` folder ada)
+- ✅ Dependencies sudah terinstall (cek folder `node_modules` ada)
 
 ## Menjalankan Proyek
 
 ### Development Mode (Recommended)
 
-Jalankan aplikasi dalam mode development dengan auto-reload:
+Jalankan dengan perintah:
 
 ```bash
 npm run dev
 ```
 
-**Fitur:**
+**Keuntungan:**
 - Server akan otomatis restart saat ada perubahan file
 - Menggunakan `nodemon` untuk monitoring perubahan
 - Cocok untuk development dan testing
 
 ### Production Mode
 
-Jalankan aplikasi dalam mode production:
+Jalankan dengan perintah:
 
 ```bash
 npm start
 ```
 
-**Fitur:**
+**Perbedaan:**
 - Menggunakan `node` langsung tanpa auto-reload
 - Cocok untuk production environment
 
 ### Verifikasi Server Berjalan
 
-Setelah menjalankan perintah di atas, Anda akan melihat output seperti:
+Setelah menjalankan perintah di atas, seharusnya muncul output seperti ini:
 
 ```
 Database connected successfully
@@ -184,13 +239,13 @@ Server akan berjalan di: **http://localhost:3000**
 
 ### Test Koneksi
 
-Buka browser atau gunakan curl untuk test endpoint health check:
+Untuk test endpoint health check, bisa menggunakan curl:
 
 ```bash
 curl http://localhost:3000/health
 ```
 
-Atau buka di browser: `http://localhost:3000/health`
+Atau langsung buka di browser: `http://localhost:3000/health`
 
 Response yang diharapkan:
 ```json
@@ -203,7 +258,7 @@ Response yang diharapkan:
 
 ## Akses Dokumentasi API
 
-Setelah server running, akses Swagger UI untuk dokumentasi interaktif:
+Setelah server running, bisa akses Swagger UI untuk dokumentasi interaktif:
 
 **URL:** http://localhost:3000/api-docs
 
@@ -289,13 +344,13 @@ GET /api/books?title=gatsby&page=1&limit=10
 ### Members
 
 #### POST /api/members
-Register member baru.
+Daftarkan member baru.
 
 **Request Body:**
 ```json
 {
-  "name": "John Doe",
-  "email": "john.doe@email.com",
+  "name": "John",
+  "email": "john@email.com",
   "phone": "081234567890",
   "address": "123 Main St, City"
 }
@@ -313,8 +368,8 @@ Register member baru.
   "message": "Member registered successfully",
   "data": {
     "id": "uuid",
-    "name": "John Doe",
-    "email": "john.doe@email.com",
+    "name": "John",
+    "email": "john@email.com",
     "phone": "081234567890",
     "address": "123 Main St, City",
     "created_at": "2024-01-01T00:00:00.000Z",
@@ -324,7 +379,7 @@ Register member baru.
 ```
 
 #### GET /api/members/:id/borrowings
-Get member's borrowing history.
+Lihat riwayat peminjaman member.
 
 **Query Parameters:**
 - `status` (string, optional): Filter by status (BORROWED/RETURNED)
@@ -339,7 +394,7 @@ GET /api/members/{member_id}/borrowings?status=BORROWED&page=1&limit=10
 ### Borrowings
 
 #### POST /api/borrowings
-Create new book borrowing.
+Pinjam buku baru.
 
 **Request Body:**
 ```json
@@ -361,7 +416,7 @@ Create new book borrowing.
 - `404`: Book not found / Member not found
 
 #### PUT /api/borrowings/:id/return
-Process book return.
+Kembalikan buku yang dipinjam.
 
 **Path Parameters:**
 - `id`: Borrowing ID
@@ -379,7 +434,7 @@ Process book return.
 ### Health Check
 
 #### GET /health
-Check server status.
+Cek status server.
 
 **Response:**
 ```json
@@ -458,8 +513,8 @@ Semua error responses mengikuti format:
 - Pastikan database `library_db` sudah dibuat
 
 ### Port Already in Use
-- Ganti `PORT` di file `.env` dengan port lain (contoh: 3001)
-- Atau hentikan aplikasi yang menggunakan port 3000
+- Ganti `PORT` di file `.env` dengan port lain (misalnya 3001)
+- Atau hentikan aplikasi yang sedang menggunakan port 3000
 
 ### Module Not Found
 - Pastikan sudah menjalankan `npm install`
@@ -474,7 +529,7 @@ Semua error responses mengikuti format:
 
 - Pastikan PostgreSQL sudah running sebelum menjalankan aplikasi
 - Import `schema.sql` terlebih dahulu sebelum menjalankan aplikasi
-- Sample data dapat diimport menggunakan `sample_data.sql` untuk testing
+- Sample data bisa diimport menggunakan `sample_data.sql` untuk testing
 - Semua business logic diimplementasikan di service layer
 - Database transactions digunakan untuk operasi borrowing dan return
 - File `.env` jangan di-commit ke repository (sudah ada di `.gitignore`)
@@ -491,9 +546,3 @@ Swagger UI menyediakan:
 - Dokumentasi interaktif semua endpoints
 - Try it out langsung dari browser
 - Request/Response examples
-
-### Unit Tests
-Jalankan test dengan:
-```bash
-npm test
-```
